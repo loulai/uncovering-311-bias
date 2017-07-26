@@ -1,28 +1,33 @@
-# reading data
-d311 <- read_csv("311_service_requests_from_2011.csv")
+library(readr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
 
-# selecting only incident zip
-d311 <- d311 %>% select(`Complaint Type`, `Incident Zip`)
+# read data
+complaints_with_type_initial <- read_csv("311_service_requests_from_2011.csv")
 
-# renaming
-d311 <- d311 %>% rename(complaint_type = `Complaint Type`, incident_zip = `Incident Zip`)
+# selecting only complaint type and incident zip
+complaints_with_type <- complaints_with_type_initial %>% select(`Complaint Type`, `Incident Zip`)
 
-# reordering
-d311 <-  d311[c(2,1)]
+# renaming columns
+complaints_with_type <- complaints_with_type %>% rename(complaint_type = `Complaint Type`, zip = `Incident Zip`)
+
+# reordering columns (for readability)
+complaints_with_type <-  complaints_with_type[c(2,1)]
 
 # adding count of complaints
-d311_new <- d311 %>% group_by(incident_zip) %>% mutate(num_total_complaints = n())
+complaints <- complaints_with_type %>% group_by(zip) %>% mutate(num_total_complaints = n())
 
-# removing complaint type
-d311_new <- d311_new[, -2]
+# removing complaint type 
+complaints <- complaints[, -2]
 
 # removing duplicate rows
-d311_new <- d311_new %>% distinct(incident_zip)
+complaints <- complaints %>% distinct(zip)
 
 # removing NA's 
-d311_new <- na.omit(d311_new)
+complaints <- na.omit(complaints)
 
-# there are 696 zip codes 
+# there are 696 zip codes
 # end table should have zip code and count of complaints in that zip code
 
 
