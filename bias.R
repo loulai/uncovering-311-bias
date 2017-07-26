@@ -10,7 +10,7 @@ acsMessy <- read_csv("ACS_15_5YR_mean_median.csv")
 #### filtering ACS 5 year income data
 
 # removing row one
-acs <- acsMessy[-1,]
+acs <- acsMessy[-1, ]
 
 # selecting columns that are not 'measures of error' 
 acs <- acs[, !grepl("MOE", names(acs))] # 63 colmuns from 75
