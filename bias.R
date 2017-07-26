@@ -4,7 +4,7 @@ library(lubridate)
 library(ggplot2)
 
 #reading data
-d <- read_csv('311SR_from_2011.csv')
+d <- read_csv("311_service_requests_from_2011.csv")
 acsMessy <- read_csv("ACS_15_5YR_mean_median.csv")
 
 #### filtering ACS 5 year income data
@@ -21,7 +21,7 @@ acs <- acs[, !grepl("HC02|HC03|HC04", names(acs))] # 54 columns from 75
 # removing NA columns
 acs <- acs[c(1:6)] 
 
-# renaming columns 
+# renaming columns s
 acs = acs %>% rename(GEO_id = GEO.id, GEO_id2 = GEO.id2, #GEO_display_level = GEO.display-label (problematic!! fix)
                      total_household = HC01_EST_VC01, 
                      median_income = HC01_EST_VC13, 
