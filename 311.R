@@ -10,4 +10,6 @@ d311 <- d311 %>% rename(complaint_type = `Complaint Type`, incident_zip = `Incid
 # reordering
 d311 <-  d311[c(2,1)]
 
-d311 <- d311  %>% 
+d311_new <- d311 %>% group_by(incident_zip) %>% mutate(num_total_complaints = n())
+
+View(d311_new)
