@@ -4,6 +4,7 @@ library(lubridate)
 library(ggplot2)
 
 # read data
+setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 complaints_with_type_initial <- read_csv("311_service_requests_from_2011.csv")
 
 # selecting only complaint type and incident zip

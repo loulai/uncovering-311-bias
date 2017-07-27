@@ -3,7 +3,7 @@ library(dplyr)
 library(lubridate)
 library(ggplot2)
 
-#reading data
+# read data
 setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 acsMessy <- read_csv("ACS_15_5YR_mean_median.csv")
 

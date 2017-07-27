@@ -43,12 +43,15 @@ corr # 0.036
 
 #===== fitting everything to see most significant ones
 
-#selecting all 'fair' data
-df <- select(grand, zip, mean_income, median_income, race_white, unemployment_rate, family_poverty_percent) 
+# selecting all data
+df <- select(grand, num_total_complaints, mean_income, median_income, race_white, unemployment_rate, family_poverty_percent) 
 View(df)
 
-#based on unmodified data (i.e. no mutates)
+# based on unmodified data (i.e. no mutates)
+train = df[-index, ] #152
+test = df[index, ] #37
 View(train)
+View(test)
 lm.fit2 <- lm(num_total_complaints ~ ., data = train)
 summary(lm.fit2)
 
