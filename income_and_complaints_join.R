@@ -2,19 +2,24 @@ library(readr)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
+library(plyr)
 
 
 # read data
 income <- read_csv("income_and_demographics.csv")
 
-# remove margins of error
-income <- income[, c(-3,-5)]
+# remove margins of error, city and state
+income <- income[, c(-3, -5, -6, -7)]
 
 # inner join
 grand <- merge(income, complaints, by="zip")
-View(grand)
-View(income)
 
+# ------------------------ functions
+
+mse <- function(lmfit)
+    sqrt(mean((summary(lmfit)$residuals)^2))
+
+# ------------------------
 ###### prediction
 
 # == split test/train
@@ -44,24 +49,40 @@ corr # 0.036
 #===== fitting everything to see most significant ones
 
 # selecting all data
-df <- select(grand, num_total_complaints, mean_income, median_income, race_white, unemployment_rate, family_poverty_percent) 
-View(df)
+#df <- select(grand, num_total_complaints, mean_income, median_income, 
+#             race_white, race_native, race_black, race_asian, race_islander, race_other, race_two, race_hispanic,
+#             unemployment_rate, family_poverty_percent) 
+
+
 
 # based on unmodified data (i.e. no mutates)
 train = df[-index, ] #152
 test = df[index, ] #37
-View(train)
-View(test)
 lm.fit2 <- lm(num_total_complaints ~ ., data = train)
 summary(lm.fit2)
 
-pred2 <- predict(lm.fit2, test)
-validation <- mutate(validation, predicted = pred1)
-View(validation)
+#====== literally everything this time
+# remove zip 
+df2 <- grand[c(-1)]
 
-#plotting predicted vs real
-ggplot(validation, aes(predicted, total_trips)) + geom_point()
+# split test and train
+train_df2 = df2[-index, ] #152
+test_df2 = df2[index, ] #37
 
-#plotting regression: predicted is red, actual is grey
-ggplot(data = test) + geom_point(aes(tmin, total_trips), color = "gray") + geom_point(aes(tmin, predicted), color = "red")
-mse(lm.fit1)
+# fitting
+lm.fit3 <- lm(num_total_complaints ~ ., data = train_df2)
+summary(lm.fit3)
+
+# creating actual predictions
+pred3 <- predict(lm.fit3, test_df2)
+test_df2 <- mutate(test_df2, predicted = pred3)
+
+# plotting predicted vs real
+ggplot(test_df2, aes(predicted, num_total_complaints)) + geom_point()
+
+# plotting regression (predicted = red, actual = grey)
+ggplot(data = test_df2) + geom_point(aes(mean_income, num_total_complaints), color = "gray") + geom_point(aes(mean_income, predicted), color = "red")
+
+mse(lm.fit3) # 2356.732
+
+
