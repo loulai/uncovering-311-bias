@@ -7,9 +7,10 @@ library(plyr)
 # read data
 setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 complaints_with_type_initial <- read_csv("311_service_requests_from_2011.csv")
+complaints_2015_initial <- read_csv("311_service_requests_from_2015.csv")
 
 # selecting only complaint type and incident zip
-complaints_with_type <- complaints_with_type_initial %>% select(`Complaint Type`, `Incident Zip`) 
+complaints_with_type <- complaints_2015_initial %>% select(`Complaint Type`, `Incident Zip`) 
 
 # renaming columns
 complaints_with_type <- complaints_with_type %>% dplyr::rename(complaint_type = `Complaint Type`, zip = `Incident Zip`)
@@ -18,29 +19,29 @@ complaints_with_type <- complaints_with_type %>% dplyr::rename(complaint_type = 
 complaints_with_type <-  complaints_with_type[c(2,1)]
 
 # adding count of complaints
-complaints <- complaints_with_type %>% group_by(zip) %>% mutate(num_total_complaints = n())
+complaints <- complaints_with_type %>% group_by(zip) %>% mutate(total_complaints = n())
 
 # removing complaint type 
 complaints <- complaints[, -2]
 
 # removing duplicate rows
-complaints <- complaints %>% distinct(zip)
+complaints <- complaints %>% distinct(zip) # 700 zips
 
 # removing NA's 
 complaints <- na.omit(complaints)
 
-# there are 696 zip codes
+# there are 699 zip codes of 2 variables (2015)
 # end table should have zip code and count of complaints in that zip code
 
 ############# exploration
 
 # how many unique 311 complaints are there?
-complaints <- d311 %>% distinct(complaint_type) #219
-View(complaints)
+complaints_unique <- complaints_with_type %>% distinct(complaint_type) 
+nrow(complaints) # 231 (2015)
 
 # what is the most complained about thing?
-d311_new2 <- d311 %>% group_by(complaint_type) %>% mutate(num_complaint_by_type = n()) # HEATING
-View(d311_new2)
+complaints_most <- complaints_with_type %>% group_by(complaint_type) %>% mutate(num_complaint_by_type = n()) %>% distinct(complaint_type)
+View(complaints_most) # 225,083 complaints for HEAT/HOT WATER
 
 # which zip code complains the most?
 # Flatbush, Brooklyn with 11,226 complaints
