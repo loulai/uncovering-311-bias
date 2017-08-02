@@ -4,30 +4,38 @@ library(lubridate)
 library(ggplot2)
 library(plyr)
 
-
 # read data
-income <- read_csv("income_and_demographics.csv")
+setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
+income_initial <- read_csv("income_and_demographics.csv")
 
 # remove margins of error, city and state
-income <- income[, c(-3, -5, -6, -7)]
+income <- income_initial[, c(-3, -5, -6, -7)]
 
-# inner join
+# merging with inner join
 grand <- merge(income, complaints, by="zip")
+
+# 189 observations of 41 variables
+grand <- grand %>% mutate(complaints_per_household = total_complaints/households, 
+                          complaints_per_person = total_complaints/population_estimate) 
+
+# normalizing complaints by household and population
 
 # ------------------------ functions
 
+#-- mean square root error
 mse <- function(lmfit)
     sqrt(mean((summary(lmfit)$residuals)^2))
 
 # ------------------------
-###### prediction
+
+########################## prediction begins! Yay!
+
+#=====  let's start with trying to predict the number of 311 calls just based off income, shall we?
 
 # == split test/train
 index <- sample(1:nrow(grand), size = 0.2 * nrow(grand))
-
 test = grand[index, ] #37
 train = grand[-index, ] #152
-nrow(train)
 
 # == fitting model
 
@@ -37,23 +45,26 @@ lm.fit1 <- lm(num_total_complaints ~ mean_income, train)
 # predict values
 predicted_complaints <- predict(lm.fit1, test)
 
-# evaluate model on test data set
+### evaluating model on test data set
 
 #graphing training & test data. Regression line is modeled on the training data, which is gray. It's designed to fit the test data in red.
 ggplot() + geom_point(data=train, aes(mean_income, num_total_complaints), color = "gray") + geom_point(data=test, aes(mean_income, num_total_complaints, color = "red")) + geom_line(data=test, aes(mean_income, predicted_complaints, color = "red")) + labs(color = "Test Data")
-corr <- cor(predicted_complaints, test$num_total_complaints) ^ 2
-corr # 0.036
+rsq <- cor(predicted_complaints, test$num_total_complaints) ^ 2
+rsq # will vary! from 0.060 to 0.350. Usually around 0.148
 
-# mean_income, unemployment rate
-
-#===== fitting everything to see most significant ones
-
-# selecting all data
-#df <- select(grand, num_total_complaints, mean_income, median_income, 
-#             race_white, race_native, race_black, race_asian, race_islander, race_other, race_two, race_hispanic,
-#             unemployment_rate, family_poverty_percent) 
+# this shows that the model isn't great at prediction, as 0.1476 is not close to 1.00 at all.
+# translation: average income per zip code is not enough to predict the volume of 311 calls for that neighborhood.
 
 
+# ====
+
+
+
+
+
+
+
+#===== fitting everything to see most significant predictor variables (i.e. feature selection, yay!)
 
 # based on unmodified data (i.e. no mutates)
 train = df[-index, ] #152
@@ -86,3 +97,10 @@ ggplot(data = test_df2) + geom_point(aes(mean_income, num_total_complaints), col
 mse(lm.fit3) # 2356.732
 
 
+############## exploration
+
+# plotting complaints_per_household by income
+# (theory: higher income, higher household complaint rate)
+
+
+# plotting complaints_per_person by income
