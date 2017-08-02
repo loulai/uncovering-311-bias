@@ -42,7 +42,9 @@ nrow(complaints) # 231 (2015)
 # what is the most complained about thing?
 complaints_most <- complaints_with_type %>% group_by(complaint_type) %>% mutate(num_complaint_by_type = n()) %>% distinct(complaint_type)
 View(complaints_most) # 225,083 complaints for HEAT/HOT WATER
+top_10_complaints <- complaints_most[order(complaints_most$num_complaints_by_type, decreasing = TRUE)]
+View(top_10_complaints)
+g <- ggplot(complaints_most, aes(complaint_type, num_complaint_by_type))
+g + geom_bar(stat = "identity")
 
-# which zip code complains the most?
-# Flatbush, Brooklyn with 11,226 complaints
 
