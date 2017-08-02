@@ -32,7 +32,6 @@ acs[, c(2, 4:6)] <- sapply(acs[, c(2, 4:6)], as.numeric)
 View(acs)
 
 
-
 ##### plotting
 # does the number of households in one area correlate to income?
 ggplot(acs, aes(x=total_household, y=mean_income)) + geom_point()  # shows slight negative correlation
