@@ -10,16 +10,20 @@ trees_initial <- read_csv("tree_census_2015.csv")
 
 ####### aim: get number of trees per zip code
 
-# selecting only zipcode
-trees <- trees_initial %>% select(zipcode)
+# renaming zipcode to zip
+trees <- trees %>% rename(zip = zipcode)
+
+# selecting only zipcode from big tree dataset
+trees <- trees_initial %>% select(zip)
 
 # counting trees by zipcode
-trees <- trees %>% group_by(zipcode) %>% mutate(total_trees = n()) %>% distinct(zipcode)
+trees <- trees %>% group_by(zip) %>% mutate(total_trees = n()) %>% distinct(zip)
 
+# merging trees with grand table
+grand_trees <- merge(trees, grand, by="zip")
 
-
-
-
+# calculating trees per person
+grand_trees <- grand_trees %>% mutate(trees_per_person = total_trees/population_estimate)
 
 
 ###### exploration
