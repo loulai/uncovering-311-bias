@@ -5,8 +5,7 @@ library(ggplot2)
 library(plyr)
 
 # read data
-setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
-complaints_with_type_initial <- read_csv("311_service_requests_from_2011.csv")
+setwd("~/Desktop/programming/msft/uncovering-311-bias/data") 
 complaints_2015_initial <- read_csv("311_service_requests_from_2015.csv")
 
 # selecting only complaint type and incident zip
