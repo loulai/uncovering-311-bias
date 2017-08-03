@@ -33,3 +33,9 @@ grand_trees <- grand_trees %>% mutate(trees_per_person = total_trees/population_
 
 # what zip has least trees?
 # 10115 has 7 trees, it's in Morningside Heights and is tiny! And has a population of 0. 
+
+# what zip has the most trees per person?
+# 10309 Rossvile, Staten Island at 0.3811 trees per person. Every 3 people have one tree.
+
+# what zip has the least trees per person?
+# 11697 Breezy Point, NY at 0.0074. Every 135 people get one tree.
