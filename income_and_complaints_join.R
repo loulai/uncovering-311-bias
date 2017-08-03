@@ -5,7 +5,7 @@ library(ggplot2)
 library(plyr)
 
 # read data
-setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
+#setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 income_initial <- read_csv("income_and_demographics.csv")
 
 # remove margins of error, city and state
