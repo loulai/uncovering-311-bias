@@ -25,6 +25,10 @@ grand_trees <- merge(trees, grand, by="zip")
 # calculating trees per person
 grand_trees <- grand_trees %>% mutate(trees_per_person = total_trees/population_estimate)
 
+# joining number of tree requests by zip
+grand_trees <- merge(tree_complaints, grand_trees, by="zip")
+# plotting number of trees v. number of requests for trees
+
 
 ###### exploration
 

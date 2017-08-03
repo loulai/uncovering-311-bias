@@ -20,6 +20,19 @@ complaints_with_type <-  complaints_with_type[c(2,1)]
 # adding count of complaints
 complaints <- complaints_with_type %>% group_by(zip) %>% mutate(total_complaints = n())
 
+# (for trees) adding counts of different types of complaints, 
+tree_complaints <- complaints %>% group_by(zip, complaint_type) %>% mutate(total_complaints_by_type= n()) %>% distinct(complaint_type)
+
+# (for trees) selecting to view only zipcode, types of complaints and their occurances within that zip
+tree_complaints <- tree_complaints  %>% select(zip, complaint_type, total_complaints_by_type)
+
+# (for trees) selecting only New Tree Requests and renaming
+tree_complaints <- tree_complaints %>% filter(complaint_type == "New Tree Request") %>% rename(new_tree_requests = total_complaints_by_type)
+#175 obs 
+
+# (for trees) removing the 'complaint type' becuase it's all trees now
+tree_complaints <- tree_complaints[, -2]
+
 # removing complaint type 
 complaints <- complaints[, -2]
 
