@@ -5,7 +5,7 @@ library(ggplot2)
 library(plyr)
 
 # read data
-setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
+#setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 income_initial <- read_csv("income_and_demographics.csv")
 
 # remove margins of error, city and state
@@ -14,7 +14,7 @@ income <- income_initial[, c(-3, -5, -6, -7)]
 # merging with inner join
 grand <- merge(income, complaints, by="zip")
 
-# 189 observations of 41 variables
+# 196 observations of 41 variables
 
 # adding normalized number of complaints by household and population
 grand <- grand %>% mutate(complaints_per_household = total_complaints/households, complaints_per_person = total_complaints/population_estimate) 
