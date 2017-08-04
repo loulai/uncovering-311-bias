@@ -27,7 +27,12 @@ grand_trees <- grand_trees %>% mutate(trees_per_person = total_trees/population_
 
 # joining number of tree requests by zip
 grand_trees <- merge(tree_complaints, grand_trees, by="zip")
+
 # plotting number of trees v. number of requests for trees
+ggplot() + geom_point(data=grand_trees, aes(total_trees, new_tree_requests), color = "black") 
+
+# plotting number of trees per person v. number of requests for trees
+ggplot() + geom_point(data=grand_trees, aes(trees_per_person, new_tree_requests), color = "black") 
 
 
 ###### exploration
