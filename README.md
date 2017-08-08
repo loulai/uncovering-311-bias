@@ -13,4 +13,4 @@ R, ggplot2, dplyr, Python
 
 
 ##### Acknowledgements
-Thank you to NYC Mayor's Office of Data Analytics (MODA), Center of Urban Future, NYU Urban Intelligence Lab and the Researchers at Microsoft NYC.
+Thank you to NYC Mayor's Office of Data Analytics (MODA), Center of Urban Future, NYU Urban Intelligence Lab and Microsoft Research.
