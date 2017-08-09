@@ -9,20 +9,28 @@ library(lubridate)
 library(ggplot2)
 library(plyr)
 
-
-# read data
 setwd("~/Desktop/programming/msft/uncovering-311-bias/data") 
-complaints_2015_initial <- read_csv("311_service_requests_from_2015.csv") 
+
+# (311) read
+complaints_initial_2015 <- read_csv("311_service_requests_from_2015.csv") 
                   
-# selecting only complaint type and incident zip
+# (311) clean
 complaints <- complaints_2015_initial %>% 
   select(`Complaint Type`, `Incident Zip`) %>% 
   dplyr::rename(complaint_type = `Complaint Type`, zip = `Incident Zip`) %>% 
   group_by(zip) %>% 
   mutate(total_complaints = n()) %>%
   select(-complaint_type) %>%
-  distinct(zip) 
+  distinct(zip) # 700 obs, 2 var
 
+# (Census) read
+income_initial_2015 <- read_csv("income_and_demographics.csv") 
+
+# (Census) clean
+income <- income_initial_2015[, c(-3, -5, -6, -7)] %>% 
+  merge(complaints, by="zip") %>%
+  mutate(complaints_per_household = total_complaints/households, complaints_per_person = total_complaints/population_estimate) 
+ # 196 obs. of 43 variables
 
 
 # (for trees) adding counts of different types of complaints, 
@@ -37,3 +45,22 @@ tree_complaints <- tree_complaints %>% filter(complaint_type == "New Tree Reques
 
 # (for trees) removing the 'complaint type' becuase it's all trees now
 tree_complaints <- tree_complaints[, -2]
+
+
+
+
+
+
+
+
+
+
+# ------------------------ functions
+
+#-- mean square root error
+mse <- function(lmfit)
+  sqrt(mean((summary(lmfit)$residuals)^2))
+
+# ------------------------
+
+
