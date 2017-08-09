@@ -23,44 +23,31 @@ complaints <- complaints_2015_initial %>%
   select(-complaint_type) %>%
   distinct(zip) # 700 obs, 2 var
 
+# (Trees) clean
+tree_complaints <- complaints_initial_2015 %>% 
+  dplyr::rename(complaint_type = `Complaint Type`, zip = `Incident Zip`) %>% 
+  group_by(zip, complaint_type) %>%
+  mutate(total_complaints_by_type = n()) %>%
+  distinct(complaint_type) %>%
+  select(zip, complaint_type, total_complaints_by_type) %>%
+  filter(complaint_type == "New Tree Request") %>%
+  rename(new_tree_complaints = total_complaints_by_type) %>% 
+  ungroup() %>% #required to drop column indicating all trees
+  select(-complaint_type)
+
 # (Census) read
 income_initial_2015 <- read_csv("income_and_demographics.csv") 
 
 # (Census) clean
 income <- income_initial_2015[, c(-3, -5, -6, -7)] %>% 
   merge(complaints, by="zip") %>%
-  mutate(complaints_per_household = total_complaints/households, complaints_per_person = total_complaints/population_estimate) 
- # 196 obs. of 43 variables
+  mutate(complaints_per_household = total_complaints/households, complaints_per_person = total_complaints/population_estimate) # 196 obs. of 43 variables
 
+# functions
 
-# (for trees) adding counts of different types of complaints, 
-tree_complaints <- complaints %>% group_by(zip, complaint_type) %>% mutate(total_complaints_by_type= n()) %>% distinct(complaint_type)
-
-# (for trees) selecting to view only zipcode, types of complaints and their occurances within that zip
-tree_complaints <- tree_complaints  %>% select(zip, complaint_type, total_complaints_by_type)
-
-# (for trees) selecting only New Tree Requests and renaming
-tree_complaints <- tree_complaints %>% filter(complaint_type == "New Tree Request") %>% rename(new_tree_requests = total_complaints_by_type)
-#175 obs 
-
-# (for trees) removing the 'complaint type' becuase it's all trees now
-tree_complaints <- tree_complaints[, -2]
-
-
-
-
-
-
-
-
-
-
-# ------------------------ functions
-
-#-- mean square root error
+# -- mean square root error
 mse <- function(lmfit)
   sqrt(mean((summary(lmfit)$residuals)^2))
-
-# ------------------------
+# --
 
 
