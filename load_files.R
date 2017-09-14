@@ -1,3 +1,4 @@
+
 # Run the following code to load required data from:
 # - complaints.R (311 Service Request Data)
 # - income_and_complaints_join.R (joining 311 and U.S. Census income and democraphics data)
@@ -13,7 +14,7 @@ setwd("~/Desktop/programming/msft/uncovering-311-bias/data")
 
 # (311) read
 complaints_initial_2015 <- read_csv("311_service_requests_from_2015.csv") 
-                  
+
 # (311) clean
 complaints <- complaints_2015_initial %>% 
   select(`Complaint Type`, `Incident Zip`) %>% 
@@ -49,5 +50,3 @@ income <- income_initial_2015[, c(-3, -5, -6, -7)] %>%
 mse <- function(lmfit)
   sqrt(mean((summary(lmfit)$residuals)^2))
 # --
-
-
